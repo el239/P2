@@ -26,4 +26,4 @@ deBruijnByStringComp.o: deBruijnByStringComp.cpp
 	g++ -c -std=c++11 deBruijnByStringComp.cpp 
 
 clean:
-	rm *o P2
+	rm *o 
