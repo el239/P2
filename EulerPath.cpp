@@ -137,10 +137,10 @@ list<size_t> find_Eulerian_path(DiGraph & g)
     
     std::cout << "src value, dest value: " << src << ", " << dest << endl;
     std::cout << "nodes size: " << nodes.size() << endl;
-    
-    // add an edge from the sink node to the source node
+
+	// add an edge from the sink node to the source node
     nodes[dest].m_outgoing.push_back(src);
-    
+
     std::cout << "no fault in eulerpath function " << endl;
     
     // increase the incoming degree of the source node by one
@@ -149,9 +149,7 @@ list<size_t> find_Eulerian_path(DiGraph & g)
     cycle = find_Eulerian_cycle(g);
     
     list<size_t>::iterator pos_src, pos_dest;
-    
-
-    
+       
     for (pos_dest = cycle.begin(); pos_dest != cycle.end(); ++ pos_dest) {
         pos_src = pos_dest;
         pos_src ++;
@@ -192,7 +190,7 @@ list<size_t> find_Eulerian_path(DiGraph & g)
     } else {
         throw "Searching for Eulerian path has failed!";
     }
-    
+                std::cout << "nodes size after: " << nodes.size() << endl;
     // return the path
     return path;
 }
