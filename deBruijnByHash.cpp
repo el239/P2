@@ -27,9 +27,19 @@ struct DNAHasher
 		size_t val = 0;
 		size_t max_width=20;
         for(size_t i=0; i<seq.size() && i<max_width; ++i) {
-            val = val << 4;
-            val += tolower(seq[i])-'a';
-        }
+            val = val << 2;
+            
+            switch (seq[i]){
+				case 'a':
+				val += 0;
+				case 'c':
+				val += 1;
+				case 'g':
+				val += 2;
+				case 't':
+				val += 3;
+			} // end switch
+        } // end for
         return val;		
        
         // END your code above
@@ -42,7 +52,7 @@ struct AlphabetHasher
     std::size_t operator()(const string & seq) const
     {
         size_t val = 0;
-        size_t max_width=20;: suff
+        size_t max_width=20;
         for(size_t i=0; i<seq.size() && i<max_width; ++i) {
             val = val << 5;
             val += tolower(seq[i])-'a';
@@ -80,21 +90,29 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
 {
     // BEGIN your code below:
     
-    /*
-    
     // create one hash table for both the k-1 prefix and suffix of each k-mer
     CSeqHash hashTable = create_hash_table(kmers);
     
-    // initialize an empty node vector for graph g
-        vector<Node> & theNode = g.m_nodes;  // Ecomment: from find Eulerian cycle function
+    // initialize an empty node vector for graph g Ecomment: using a list
+    //    vector<Node> & theNode = g.m_nodes;  
     
-		// for each k-mer 
-    ist<Node> nodes;
-        // update node source_id's label to prefix if necessary
+    vector<Node> nodes = hashTable.length;
+    
+	// for each k-mer 
 	
+	for (auto & kmer: kmers){ // for each kmer of size k
+		string prefix = kmer.substr(0, k-1);
+		string suffix = kmer.substr(1, k-1);
+	
+		
+        // update node source_id's label to prefix if necessary
+		nodes[hashTable.find(prefix) -> second].m_label = prefix;
+		 
     
         // find the suffix node id's destination_id from the hash table
-        
+          it = mymap.find('b');
+  if (it != mymap.end())
+    mymap.erase (it);
     
         // update node destination_id's label to suffix if necessary
     
@@ -107,7 +125,7 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
     
     // end for loop
     
-    */
+
     
     // END your code above
 
