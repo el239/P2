@@ -86,8 +86,8 @@ static void test_1 (const string & method)
         }
         
         try {
+			//list<size_t> path = find_Eulerian_cycle(g);
             list<size_t> path = find_Eulerian_path(g);       
-     
             string seq = build_sequence(path, g);
       
             stringstream ss;

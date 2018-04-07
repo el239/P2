@@ -24,9 +24,8 @@ struct DNAHasher
         // TO DO: Write a DNA sequence hash function here
         
         // BEGIN your code here:
-        
 
-        
+       
         // END your code above
     }
 };
@@ -61,8 +60,8 @@ CSeqHash create_hash_table(const vector<string> & kmers)
     size_t node_id=0; // the node id will be used in the de Bruijn graph
     for (auto i=0u; i<kmers.size(); ++i) {
         for(auto j=0u; j<2; ++j) { // j=0: prefix; j=1: suffix
-            auto key = kmers[i].substr(j, kmers[i].length()-1);
-            if (ht.find(key) == ht.end()) {
+            auto key = kmers[i].substr(j, kmers[i].length()- (j*-1)); // Ecomment: minus one for both?? changed
+            if (ht.find(key) == ht.end()) { // Ecomment: if the key isn't in the table?
                 ht.insert(make_pair(key, node_id ++));
             }
         }
@@ -73,20 +72,22 @@ CSeqHash create_hash_table(const vector<string> & kmers)
 void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
 // create a deBruijn graph by inserting all k-mers into the graph by hashing
 {
-    // TO DO:
-    
     // BEGIN your code below:
     
-    // create one hash table for both the k-1 prefix and suffix of
-    //   each k-mer
+    // create one hash table for both the k-1 prefix and suffix of each k-mer
+    CSeqHash hashTable = create_hash_table(kmers);
     
     // initialize an empty node vector for graph g
+        vector<Node> & theNode = g.m_nodes;  // Ecomment: from find Eulerian cycle function
     
-    
-    // for each k-mer
-    
-        // find the prefix node id from_id from the hash table
-        
+    // for each k-mer Ecomment: (from create Hash Table Function)
+       for (auto i=0u; i<kmers.size(); ++i) {
+			for(auto j=0u; j<2; ++j) { // j=0: prefix; j=1: suffix
+				auto key = kmers[i].substr(j, kmers[i].length()- (j*-1));
+            
+					// find the prefix node id from_id from the hash table
+					size_t from_id = Hash(key);
+					Node theNode = 
 
         // update node from_id's label to prefix if necessary
 
