@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+// #include <algorithm> 
 
 using namespace std;
 
@@ -65,7 +66,8 @@ struct AlphabetHasher
 //typedef unordered_multimap<string, size_t, AlphabetHasher> CSeqHash;
 
 typedef unordered_multimap<string, size_t, DNAHasher> CSeqHash;
-int elementCount = 0;
+
+vector<Node> nodes;
 
 CSeqHash create_hash_table(const vector<string> & kmers)
 // create one hash table by inserting both the prefix and suffix of each
@@ -80,10 +82,17 @@ CSeqHash create_hash_table(const vector<string> & kmers)
             auto key = kmers[i].substr(j, kmers[i].length()-1); 
             if (ht.find(key) == ht.end()) { // Ecomment: if the key isn't in the table
                 ht.insert(make_pair(key, node_id ++));
-                elementCount += 1;
-            }
-        }
-    }
+                
+            // Ecomment: creates all necessary nodes from table to avoid ad-hoc creation
+			// Ecomment: adjacency list and incoming # to be modified later 
+			
+			Node newNode;
+			newNode.m_label = key;
+		    newNode.m_num_of_incoming = 0;
+			nodes.push_back(newNode);	
+            } // Ecomment: end if
+        } // Ecomment: end for
+    } // Ecomment: end for
     return ht;
 }
 
@@ -98,22 +107,24 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
     // initialize an empty node vector for graph g 
     //    vector<Node> & theNode = g.m_nodes;  
     
-    vector<Node> nodes;
-    
     // Ecomment: creates all necessary nodes from table to avoid ad-hoc creation
     // Ecomment: adjacency list and incoming # to be modified later 
     
-    node_id = 0;
-    for (node_id != NULL){
-         
+    /*
+    size_t i;
+    for(i = 0; i < node_id; i++){
+		
     Node newNode;
-    newNode.m_label = hashTable.find(node_id) -> first;
+    newNode.m_label = hashTable.find(*node_id) -> first;
     newNode.m_num_of_incoming = 0;
     nodes.push_back(newNode);
-   
-	// for each k-mer 
+    
+	} // Ecomment: end for
 	
-	for (auto & kmer: kmers){ // for each kmer of size k
+	*/
+	
+	// for each k-mer 	
+	for(auto & kmer: kmers){ // for each kmer of size k
         size_t k = kmer.size();
         		
 		string prefix = kmer.substr(0, k-1);
@@ -132,15 +143,17 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
         //   destination_id into the adjaceny list of node source_id
         
         // Ecomment: if statment to avoid redundancy in the list, maybe not necessary
-        if (!nodes[hashTable.find(prefix) -> second].m_outgoing.contains(
-        nodes[hashTable.find(suffix) -> second])){
-			
-		nodes[hashTable.find(prefix) -> second].m_outgoing.push(
-		nodes[hashTable.find(suffix) -> second];
+        
+		// if (std::find(nodes.begin(), nodes.end(), 
+		// nodes[hashTable.find(suffix) -> second]) != vector.end()){
+
+		nodes[hashTable.find(prefix) -> second].m_outgoing.push_back(
+		hashTable.find(suffix) -> second);
 		
 		// update the number of incoming edges of node destination_id
 		nodes[hashTable.find(suffix) -> second].m_num_of_incoming++;
-		} // Ecomment: end if
+		
+		// } // Ecomment: end if
 
     } // end for loop
     

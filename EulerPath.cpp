@@ -134,14 +134,9 @@ list<size_t> find_Eulerian_path(DiGraph & g)
     dest = dest >= g.m_nodes.size() ? 0 : dest;
     
     vector<Node> & nodes = g.m_nodes;
-    
-    std::cout << "src value, dest value: " << src << ", " << dest << endl;
-    std::cout << "nodes size: " << nodes.size() << endl;
 
 	// add an edge from the sink node to the source node
     nodes[dest].m_outgoing.push_back(src);
-
-    std::cout << "no fault in eulerpath function " << endl;
     
     // increase the incoming degree of the source node by one
     nodes[src].m_num_of_incoming ++;
