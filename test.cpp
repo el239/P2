@@ -104,12 +104,13 @@ static void test_1 (const string & method)
 static void test_2(const string & method)
 {
     string seq_truth = random_DNA_sequence();
+    // or substitute graphOutput test sequence
     size_t k=10;
     
     vector<string> kmers = get_kmers(seq_truth, k);
     
     try {
-        string seq = assemble_kmers(kmers, method);
+        string seq = assemble_kmers(kmers, method /*,./graphOutput*/);
     
         test_and_print_message(seq, seq_truth, k, "Test 2");
 

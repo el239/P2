@@ -105,23 +105,7 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
     CSeqHash hashTable = create_hash_table(kmers);
     
     // initialize an empty node vector for graph g 
-    //    vector<Node> & theNode = g.m_nodes;  
-    
-    // Ecomment: creates all necessary nodes from table to avoid ad-hoc creation
-    // Ecomment: adjacency list and incoming # to be modified later 
-    
-    /*
-    size_t i;
-    for(i = 0; i < node_id; i++){
-		
-    Node newNode;
-    newNode.m_label = hashTable.find(*node_id) -> first;
-    newNode.m_num_of_incoming = 0;
-    nodes.push_back(newNode);
-    
-	} // Ecomment: end for
-	
-	*/
+	// Ecomment: performed with file-scope after definitions section
 	
 	// for each k-mer 	
 	for(auto & kmer: kmers){ // for each kmer of size k
@@ -132,20 +116,18 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
 	
 		
         // update node source_id's label to prefix if necessary
+        
+		// Ecomment: uneccessary, performed in grapsh function
 		// nodes[hashTable.find(prefix) -> second].m_label = prefix;
 		 
-        // find the suffix node id's destination_id from the hash table
-         
+        // find the suffix node id's destination_id from the hash table         
         // update node destination_id's label to suffix if necessary
+        
+        // Ecomment: uneccessary, performed in grapsh function
 		// nodes[hashTable.find(suffix) -> second].m_label = suffix;    
     
         // create a new edge (source_id, destination_id) by inserting node
-        //   destination_id into the adjaceny list of node source_id
-        
-        // Ecomment: if statment to avoid redundancy in the list, maybe not necessary
-        
-		// if (std::find(nodes.begin(), nodes.end(), 
-		// nodes[hashTable.find(suffix) -> second]) != vector.end()){
+        // destination_id into the adjaceny list of node source_id
 
 		nodes[hashTable.find(prefix) -> second].m_outgoing.push_back(
 		hashTable.find(suffix) -> second);
@@ -164,7 +146,9 @@ void create_deBruijn_graph_by_hashing(const vector<string> & kmers, DiGraph & g)
     while (vectorIterator != nodes.end()) {
         * graphIterator ++ = * vectorIterator ++;
     } // Ecomment: end while
-           
+    
+    // resets vector for next test
+    nodes.clear();       
     // END your code above
 
 }

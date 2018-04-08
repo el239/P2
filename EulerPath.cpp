@@ -5,7 +5,9 @@
 //  Created by Joe Song on 11/23/15.
 //  Copyright © 2015 Joe Song. All rights reserved.
 //
-//  Updated 3/19/2018
+//  Updated:
+//  3/19/2018
+//  4/6/2018
 
 #include "k-assembler.hpp"
 #include <iostream>
@@ -49,7 +51,7 @@ size_t sink(const DiGraph & g)
 list<size_t> find_Eulerian_cycle(DiGraph & g)
 // find an Eulerian cycle from graph g
 {
-    list <size_t> cycle; // main cycle
+    list <size_t> E_cycle; // main cycle
     
     // TO-DO: insert code to find Eulerian cycle represented
     //   as a list of node id.
@@ -58,65 +60,79 @@ list<size_t> find_Eulerian_cycle(DiGraph & g)
     
     // BEGIN your code here:
     
+    // creates vector of references to nodes equal to those in the input
     vector<Node> & nodes = g.m_nodes;
     
-    // initialize the cycle to include the first node in the graph
-    cycle.push_back(0);
+    // puts starting node into the cycle
+    E_cycle.push_back(0);
     
-    for (auto itr=cycle.begin(); itr!=cycle.end(); ++itr) {
-        // for each node in the current cycle
-        size_t i = *itr;
+    // iterates through nodes in the cycle
+    for (auto iterator = E_cycle.begin(); iterator != E_cycle.end(); ++iterator){
+		
+		// sets cursor to help navigate
+        size_t cursor = *iterator;
         
-        auto & outgoing = nodes[i].m_outgoing;
+        // catches outgoing node in variable
+        auto & outgoing = nodes[cursor].m_outgoing;
         
-        while (outgoing.size() > 0) {
+        // if the node @ cursor element has at least one outgoing edge
+        while (outgoing.size() > 0){
             
-            // side cycle starting from node i
-            list <size_t> side;
-            
+            // value for destination node            
             size_t next = outgoing.front();
             
-            // remove the edge (i, next)
+            // loops connecting at cursor element
+            list <size_t> loop;
+
+            // erases edge to destination, and decrements incoming 
             outgoing.pop_front();
-            
-            // update the number of incoming edges for node next
             nodes[next].m_num_of_incoming --;
             
-            // if the node has outgoing edge
-            side.push_back(next);
+            // for alternate edges
+            loop.push_back(next);
             
-            while (next != i) {
-                //   extend the side cycle
+            // while still behind the cursor element
+            while (next != cursor){
                 size_t current = next;
                 
-                if (nodes[current].m_outgoing.size() > 0) {
+                // if the current node still has outgoing edges
+                if (nodes[current].m_outgoing.size() > 0){
                     
+                    // append data member for "next" node
                     next = nodes[current].m_outgoing.front();
                     
-                    // remove the edge (current, next)
+                    // remove the edge and decrement
                     nodes[current].m_outgoing.pop_front();
-                    // update the number of incoming edges for node next
                     nodes[next].m_num_of_incoming --;
                     
-                    side.push_back(next);
+                    // updates the loop
+                    loop.push_back(next);
+                    // iterates
                     current = next;
-                }
-            }
+                    
+                } // end if
+            } // end while
             
-            if(next != i) {
+            // error case
+            if(next != cursor){
                 throw "ERROR: finding Eulerian path failed!";
-            } else {
-                auto itr_ngb = itr;
-                itr_ngb ++;
-                // insert the side cycle into the main cycle
-                cycle.insert(itr_ngb, side.begin(), side.end());
-            }
-        }
-    }
+            } // end if
+            
+            // otherwise increment secondary iterator 
+            // (so as not to lose track primary position)
+            else {
+                auto secondary_iterator = iterator;
+                secondary_iterator ++;
+                
+                // pasting loop onto graph
+                E_cycle.insert(secondary_iterator, loop.begin(), loop.end());
+            } // end else
+        } // end while
+    } // end for
     
     // END your code above
 
-    return cycle;
+    return E_cycle;
 }
 
 list<size_t> find_Eulerian_path(DiGraph & g)
@@ -142,7 +158,7 @@ list<size_t> find_Eulerian_path(DiGraph & g)
     nodes[src].m_num_of_incoming ++;
 
     cycle = find_Eulerian_cycle(g);
-    
+
     list<size_t>::iterator pos_src, pos_dest;
        
     for (pos_dest = cycle.begin(); pos_dest != cycle.end(); ++ pos_dest) {
@@ -185,7 +201,6 @@ list<size_t> find_Eulerian_path(DiGraph & g)
     } else {
         throw "Searching for Eulerian path has failed!";
     }
-                std::cout << "nodes size after: " << nodes.size() << endl;
     // return the path
     return path;
 }
